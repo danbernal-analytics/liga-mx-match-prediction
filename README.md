@@ -1,42 +1,48 @@
-# ⚽ Predicción Probabilística de Resultados en la Liga MX
-Modelado estadístico para cuantificación de incertidumbre en football analytics
+# ⚽ Liga MX Match Probability Estimator
+**Modelado probabilístico y cuantificación de incertidumbre en Football Analytics**
 
-**dashboard link:** **https://ligamx-match-prediction-vlpu.onrender.com/**
+`dashboard link:` https://ligamx-match-prediction-vlpu.onrender.com/
 
-## 🎯 Objetivo 
+## 🎯 Objetivo del Proyecto
+El fútbol es un deporte de baja frecuencia de eventos y alta varianza. El objetivo de este proyecto no es realizar predicciones deterministas (ganar/perder), sino construir un modelo estadístico calibrado que estime probabilidades reales para los resultados: **Victoria Local**, **Empate** y **Victoria Visitante**.
 
-Desarrollar un modelo de machine learning que permita estimar probabilidades de resultado (Victoria Local, Empate, Victoria Visitante) en partidos de la Liga MX, con el objetivo de apoyar la toma de decisiones analíticas y el análisis estratégico, superando enfoques deterministas basados únicamente en predicciones puntuales.
+## ⚙️ Metodología y Feature Engineering
 
-## 💡 Resumen y Solución Analítica
+### 1. Integridad Temporal (Anti-Leakage)
+Se implementó un protocolo estricto de validación temporal.
+* **Corte temporal:** `2025-01-01`.
+* **Entrenamiento:** Datos históricos 2012-2024 (4070 partidos).
+* **Test:** Temporada 2025 en adelante (196 partidos).
+* **Rolling Windows:** Todas las métricas de forma se calcularon con un `shift(1)` para garantizar que el modelo solo \"vea\" información disponible antes del pitazo inicial.
 
-El proyecto se centró en la construcción de un pipeline completo de análisis y modelado predictivo aplicado a fútbol profesional. A partir de datos históricos de partidos, se realizó feature engineering orientado al contexto deportivo, incorporando métricas de forma reciente mediante ventanas temporales (rolling windows) y jerarquía competitiva (tiers) para capturar diferencias estructurales entre equipos.
+### 2. Variables Dinámicas
+En lugar de promedios globales, se generaron features de ventanas móviles (5 partidos) para capturar el *momentum*:
+* `diff_form_5`: Diferencia de puntos obtenidos en los últimos 5 juegos.
+* `diff_goals_for/against`: Diferencia en eficiencia ofensiva y defensiva reciente.
 
-Se implementó un esquema de validación temporal estricta por año, respetando la naturaleza secuencial de las temporadas (Apertura/Clausura) y evitando data leakage. Como modelos principales se evaluaron Regresión Logística Multiclase y XGBoost, priorizando métricas probabilísticas sobre métricas de clasificación tradicionales.
+### 3. Jerarquía Estructural (Tiering)
+Se creó un **Ranking Histórico** dividiendo a los equipos en 3 Tiers (Élite, Medio, Bajo) basado en su *win rate* y diferencia de goles histórica.
+* **Impacto:** La variable `diff_tier` (Diferencia de Jerarquía) resultó ser la característica más importante del modelo (Importance Score: 417.0 en XGBoost), validando que la historia pesa más que la racha reciente en la Liga MX.
 
----
+## 📊 Resultados y Evaluación
+La métrica principal de éxito fue el **Log Loss**, que penaliza la incertidumbre y premia la calibración.
 
-## 📊 Impacto y Conclusiones
+| Modelo | Log Loss | Observación |
+| :--- | :--- | :--- |
+| **Baseline (Frecuencia Histórica)** | `1.0578` | Probabilidad "ciega" basada solo en localía. |
+| **XGBoost (Calibrado)** | `1.0145` | Ligero sobreajuste por la complejidad del modelo. |
+| **Logistic Regression (Final)** | **`1.0103`** | **Mejor rendimiento y generalización.** |
 
-Calidad Probabilística sobre Precisión: El desempeño se evaluó mediante Log Loss, permitiendo medir no solo si el modelo “acierta”, sino qué tan bien calibra la incertidumbre asociada a cada resultado posible.
-
-Simplicidad vs Complejidad: La Regresión Logística obtuvo un Log Loss ligeramente inferior al de XGBoost, evidenciando que, para el volumen y la estructura de los datos disponibles, un modelo lineal captura de forma eficiente la señal relevante sin introducir varianza innecesaria.
-
-Interpretabilidad y Estabilidad: El modelo final ofrece probabilidades consistentes y explicables, facilitando su uso en contextos analíticos donde la comprensión del porqué es tan importante como la predicción en sí.
-
-Análisis de Calibración: La evaluación mediante curvas de calibración mostró una alineación razonable entre probabilidades predichas y resultados observados, reforzando la utilidad del modelo como herramienta de análisis probabilístico.
-
-Aplicación Práctica: Los resultados del modelo se integraron en un dashboard interactivo, permitiendo simular enfrentamientos y traducir el output estadístico en insights accionables para usuarios no técnicos.
-
----
-
-# 🧠 Consideraciones Metodológicas
-
-* Uso de validación temporal en lugar de splits aleatorios.
-* Priorización de métricas probabilísticas (Log Loss) sobre accuracy.
-* Reconocimiento explícito de la alta varianza e incertidumbre inherentes al fútbol.
-* Enfoque en robustez y generalización más que en optimización extrema del modelo.
+**Conclusión Técnica:**
+A pesar de la popularidad de los modelos de Boosting, la **Regresión Logística** demostró ser superior para este volumen de datos. Su naturaleza lineal capturó eficientemente la ventaja de localía (coeficiente `0.2775` para Home Win) y la jerarquía de los equipos, ofreciendo probabilidades más robustas y menos propensas al ruido que XGBoost.
 
 ## 🛠️ Stack Tecnológico
-* **Lenguaje:** Python
-* **Librerías Clave:** Pandas, NumPy, Scikit-learn (Logistic Regression, métricas, calibración), XGBoost, Matplotlib / Plotly (visualización)
-* **Metodología:** **Feature Engineering con ventanas temporales (rolling metrics)**, **Modelado Multiclase**, **Validación Temporal**, **Modelado Probabilístico**, **Football Analytics aplicado a Liga MX**
+* **Lenguaje:** Python 3.x
+* **Data Processing:** Pandas, NumPy (Manejo de series temporales y rolling windows).
+* **Machine Learning:** Scikit-learn (LogisticRegression, CalibratedClassifierCV), XGBoost.
+* **Visualización:** Matplotlib, Seaborn (Curvas de calibración y Feature Importance).
+* **Despliegue:** Streamlit (Dashboard interactivo).
+
+---
+**Desarrollado por:** Dan Bernal
+**Contacto:** danbernal.analytics@gmail.com
