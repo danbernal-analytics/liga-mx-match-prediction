@@ -22,7 +22,7 @@ En lugar de promedios globales, se generaron features de ventanas móviles (5 pa
 
 ### 3. Jerarquía Estructural (Tiering)
 Se creó un **Ranking Histórico** dividiendo a los equipos en 3 Tiers (Élite, Medio, Bajo) basado en su *win rate* y diferencia de goles histórica.
-* **Impacto:** La variable `diff_tier` (Diferencia de Jerarquía) resultó ser la característica más importante del modelo (Importance Score: 417.0 en XGBoost), validando que la historia pesa más que la racha reciente en la Liga MX.
+* **Impacto:** La variable `diff_tier` (Diferencia de Jerarquía) resultó ser la característica más importante del modelo (consistentemente destacada como una de las variables más influyentes), validando que la historia pesa más que la racha reciente en la Liga MX.
 
 ## 📊 Resultados y Evaluación
 La métrica principal de éxito fue el **Log Loss**, que penaliza la incertidumbre y premia la calibración.
@@ -34,7 +34,7 @@ La métrica principal de éxito fue el **Log Loss**, que penaliza la incertidumb
 | **Logistic Regression (Final)** | **`1.0103`** | **Mejor rendimiento y generalización.** |
 
 **Conclusión Técnica:**
-A pesar de la popularidad de los modelos de Boosting, la **Regresión Logística** demostró ser superior para este volumen de datos. Su naturaleza lineal capturó eficientemente la ventaja de localía (coeficiente `0.2775` para Home Win) y la jerarquía de los equipos, ofreciendo probabilidades más robustas y menos propensas al ruido que XGBoost.
+A pesar de la popularidad de los modelos de Boosting, la **Regresión Logística** demostró ser superior para este volumen de datos. Su naturaleza lineal capturó eficientemente la ventaja de localía (coeficiente positivo consistente con la ventaja histórica de localía) y la jerarquía de los equipos, ofreciendo probabilidades más robustas y menos propensas al ruido que XGBoost.
 
 ## 🛠️ Stack Tecnológico
 * **Lenguaje:** Python.
@@ -44,5 +44,5 @@ A pesar de la popularidad de los modelos de Boosting, la **Regresión Logística
 * **Despliegue:** Streamlit (Dashboard interactivo).
 
 ---
-**Desarrollado por:** Dan Bernal
-**Contacto:** danbernal.analytics@gmail.com
+Desarrollado por: Dan Bernal
+Data Analyst | Tactical & Performance | Probabilistic Modeling
