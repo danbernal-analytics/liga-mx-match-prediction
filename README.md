@@ -37,7 +37,7 @@ La métrica principal de éxito fue el **Log Loss**, que penaliza la incertidumb
 A pesar de la popularidad de los modelos de Boosting, la **Regresión Logística** demostró ser superior para este volumen de datos. Su naturaleza lineal capturó eficientemente la ventaja de localía (coeficiente `0.2775` para Home Win) y la jerarquía de los equipos, ofreciendo probabilidades más robustas y menos propensas al ruido que XGBoost.
 
 ## 🛠️ Stack Tecnológico
-* **Lenguaje:** Python 3.x
+* **Lenguaje:** Python.
 * **Data Processing:** Pandas, NumPy (Manejo de series temporales y rolling windows).
 * **Machine Learning:** Scikit-learn (LogisticRegression, CalibratedClassifierCV), XGBoost.
 * **Visualización:** Matplotlib, Seaborn (Curvas de calibración y Feature Importance).
