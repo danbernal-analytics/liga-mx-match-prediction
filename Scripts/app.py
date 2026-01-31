@@ -7,6 +7,25 @@ import base64
 import streamlit.components.v1 as components
 import plotly.graph_objects as go # <--- IMPORTANTE: Nueva librería para el gráfico
 
+import os
+import streamlit as st
+import pandas as pd
+import numpy as np
+import joblib
+import base64
+import streamlit.components.v1 as components
+import plotly.graph_objects as go  # <--- IMPORTANTE: Nueva librería para el gráfico
+
+# =====================================================
+# PATHS BASE (PORTABLES)
+# =====================================================
+BASE_DIR = os.path.dirname(os.path.abspath(__file__))
+
+DATA_PATH = os.path.join(BASE_DIR, "..", "Data", "matches_model.csv")
+MODEL_PATH = os.path.join(BASE_DIR, "..", "Model", "logreg_model.pkl")
+ASSETS_PATH = os.path.join(BASE_DIR, "..", "Assets")
+BG_IMAGE_PATH = os.path.join(ASSETS_PATH, "background.jpeg")
+
 # =====================================================
 # FONDO PERSONALIZADO
 # =====================================================
@@ -69,20 +88,24 @@ st.markdown("Modelo de **Regresión Logística** con jerarquía histórica y for
 TIER_MAP = {
     'Club América': 1, 'Tigres UANL': 1, 'Monterrey': 1, 'Cruz Azul': 1, 'Toluca FC': 1,
     'Guadalajara': 2, 'Pachuca': 2, 'León': 2, 'Pumas UNAM': 2, 'Santos Laguna': 2,
-    'Tijuana': 3, 'Atlas': 3, 'Atlético de San Luis': 3, 'Necaxa': 3, 
+    'Tijuana': 3, 'Atlas': 3, 'Atlético de San Luis': 3, 'Necaxa': 3,
     'Querétaro': 3, 'Puebla': 3, 'Juárez': 3, 'Mazatlán FC': 3
 }
 
 @st.cache_data
 def load_data():
     return pd.read_csv(
-        r"D:\101010 Revisiones\GitHub\liga-mx-match-prediction\Data\matches_model.csv",
+        DATA_PATH,
         parse_dates=["date"]
     )
+    ## Ruta local original (NO usar en cloud)
+    ## r"D:\101010 Revisiones\GitHub\liga-mx-match-prediction\Data\matches_model.csv"
 
 @st.cache_resource
 def load_model():
-    return joblib.load(r"D:\101010 Revisiones\GitHub\liga-mx-match-prediction\Model\logreg_model.pkl")
+    return joblib.load(MODEL_PATH)
+    ## Ruta local original (NO usar en cloud)
+    ## r"D:\101010 Revisiones\GitHub\liga-mx-match-prediction\Model\logreg_model.pkl"
 
 df = load_data()
 model = load_model()
@@ -99,7 +122,8 @@ def get_last_matches(df, team, n=5):
 
 def calculate_features(df, team):
     last = get_last_matches(df, team)
-    if len(last) < 1: return None
+    if len(last) < 1:
+        return None
 
     goals_for, goals_against, points = [], [], []
     for _, row in last.iterrows():
@@ -179,11 +203,10 @@ if st.button("🔮 Calcular Probabilidades"):
     c2.metric(ordered_labels[1], f"{ordered_values[1]:.2%}")
     c3.metric(ordered_labels[2], f"{ordered_values[2]:.2%}")
 
-    # --- INICIO DEL GRÁFICO PERSONALIZADO (PLOTLY) ---
     fig = go.Figure(go.Bar(
         x=ordered_labels,
         y=ordered_values,
-        marker_color=['#557B55', '#E0E0E0', '#B35A5A'], # Colores desaturados
+        marker_color=['#557B55', '#E0E0E0', '#B35A5A'],
         text=[f"{v:.1%}" for v in ordered_values],
         textposition='auto',
     ))
@@ -198,7 +221,6 @@ if st.button("🔮 Calcular Probabilidades"):
         yaxis=dict(showgrid=False, range=[0, 1])
     )
     st.plotly_chart(fig, use_container_width=True)
-    # --- FIN DEL GRÁFICO ---
 
     favorite_prob = max(ordered_values)
     if favorite_prob >= 0.65:
@@ -212,25 +234,23 @@ if st.button("🔮 Calcular Probabilidades"):
     st.info(interpretation)
 
     st.caption(
-    "Las probabilidades reflejan la estimación del modelo dado el contexto actual. "
-    "No representan certezas ni recomendaciones de apuesta."
-)
+        "Las probabilidades reflejan la estimación del modelo dado el contexto actual. "
+        "No representan certezas ni recomendaciones de apuesta."
+    )
 
 # =====================================================
-# DATOS RECIENTES (CON GOLES GL/GV)
+# DATOS RECIENTES
 # =====================================================
 st.divider()
 st.subheader("Datos Recientes (Últimos 5 Partidos)")
 c_h, c_a = st.columns(2)
 
 with c_h:
-    st.write(f"Últimos juegos: {home_team}")
     recent_h = get_last_matches(df, home_team)[['date', 'home_team', 'home_goals', 'away_goals', 'away_team', 'result']]
     recent_h.columns = ['Fecha', 'Local', 'GL', 'GV', 'Visita', 'Res']
     st.dataframe(recent_h, hide_index=True)
 
 with c_a:
-    st.write(f"Últimos juegos: {away_team}")
     recent_a = get_last_matches(df, away_team)[['date', 'home_team', 'home_goals', 'away_goals', 'away_team', 'result']]
     recent_a.columns = ['Fecha', 'Local', 'GL', 'GV', 'Visita', 'Res']
     st.dataframe(recent_a, hide_index=True)
@@ -243,7 +263,8 @@ st.caption("GL: Goles Local | GV: Goles Visitante")
 st.divider()
 st.caption(
     "⚠️ Este sistema estima probabilidades basadas en patrones históricos. "
-    "No predice resultados futuros con certeza ni garantiza beneficios.")
+    "No predice resultados futuros con certeza ni garantiza beneficios."
+)
 
 # =====================================================
 # FIN DEL SCRIPT
