@@ -84,7 +84,7 @@ TIER_MAP = {
 }
 
 @st.cache_data
-def load_data():
+def load_data(ttl=3600):
     return pd.read_csv(
         DATA_PATH,
         parse_dates=["date"]
