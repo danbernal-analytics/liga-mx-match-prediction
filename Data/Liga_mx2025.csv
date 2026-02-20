@@ -214,3 +214,12 @@ MatchDate,Match_Time,League,Jornada,HomeTeam,AwayTeam,FTHome,FTAway,FTResult,Cou
 07/02/2026,19:00,LigaMX,J5,Atlas,Pumas UNAM,2,2,D,México,30.79,38.28,30.93,BAJA,A,0,1
 08/02/2026,20:00,LigaMX,J5,Pachuca,Juárez,2,0,H,México,52.64,20.36,27.01,BAJA,H,1,0
 08/02/2026,21:10,LigaMX,J5,Club América,Monterrey,1,0,H,México,40.33,28.63,31.04,BAJA,H,1,0
+13/02/2026,19:00,LigaMX,J6,Puebla,Pumas UNAM,2,3,H,México,30.96,36.51,32.54,BAJA,A,0,1
+13/02/2026,19:00,LigaMX,J6,Toluca FC,Tijuana,1,0,H,México,62.26,14.13,32.54,MEDIA,H,1,0
+14/02/2026,17:00,LigaMX,J6,Atlético de San Luis,Querétaro,3,0,H,México,44.28,29.12,26.6,BAJA,H,1,0
+14/02/2026,17:00,LigaMX,J6,Pachuca,Atlas,3,1,H,México,54.74,19.42,25.84,MEDIA,H,1,0
+14/02/2026,17:00,LigaMX,J6,Monterrey,León,1,0,H,México,58.03,17.62,24.35,MEDIA,H,1,0
+14/02/2026,19:00,LigaMX,J6,Juárez,Necaxa,1,2,A,México,43.68,28.64,27.79,BAJA,H,0,1
+14/02/2026,21:10,LigaMX,J6,Guadalajara,Club América,1,2,A,México,34.84,37.2,27.95,BAJA,A,0,1
+15/02/2026,16:30,LigaMX,J6,Cruz Azul,Tigres UANL,2,1,H,México,43.16,29.56,27.28,BAJA,H,1,0
+15/02/2026,17:00,LigaMX,J6,Santos Laguna,Mazatlán FC,1,2,A,México,50.05,29.29,19.96,MEDIA,H,0,1
